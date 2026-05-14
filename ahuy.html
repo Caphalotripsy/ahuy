@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="id" class="h-full w-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modul Digital CorelDRAW</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap');
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+    }
+
+    body {
+      font-family: "Outfit", sans-serif;
+      overflow: hidden;
+    }
+
+    .app-shell {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background:
+        radial-gradient(circle at 10% 15%, rgba(255, 199, 44, 0.28), transparent 28%),
+        radial-gradient(circle at 85% 12%, rgba(0, 210, 255, 0.24), transparent 30%),
+        linear-gradient(135deg, #07111f 0%, #0b1f3a 48%, #101827 100%);
+      color: #f8fafc;
+      position: relative;
+    }
+
+    .app-shell::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.13;
+      background-image:
+        linear-gradient(90deg, #ffffff 1px, transparent 1px),
+        linear-gradient(#ffffff 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: linear-gradient(to bottom, black, transparent 88%);
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(18px);
+    }
+
+    .paper-card {
+      background: #fff7df;
+      color: #172033;
+      box-shadow: 12px 12px 0 rgba(255, 199, 44, 0.35), 0 28px 80px rgba(0,0,0,0.25);
+    }
+
+    .hero-title {
+      font-family: "Fraunces", serif;
+      letter-spacing: -0.04em;
+    }
+
+    .tab-button {
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    .tab-button:hover {
+      transform: translateY(-2px);
+    }
+
+    .tab-button.active {
+      background: #ffc72c;
+      color: #07111f;
+      box-shadow: 0 12px 30px rgba(255, 199, 44, 0.28);
+    }
+
+    .tool-chip {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .tool-chip:hover {
+      transform: translateY(-4px) rotate(-1deg);
+      box-shadow: 0 16px 35px rgba(0,0,0,0.18);
+    }
+
+    .screen {
+      display: none;
+      animation: popIn 0.45s ease both;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .orbit {
+      animation: orbit 8s linear infinite;
+      transform-origin: center;
+    }
+
+    @keyframes orbit {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .answer-option {
+      transition: border 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    }
+
+    .answer-option:hover {
+      transform: translateX(4px);
+      background: rgba(255, 199, 44, 0.12);
+      border-color: rgba(255, 199, 44, 0.8);
+    }
+
+    .answer-option.selected {
+      background: rgba(0, 210, 255, 0.16);
+      border-color: #00d2ff;
+    }
+
+    .answer-option.correct {
+      background: rgba(34, 197, 94, 0.18);
+      border-color: #22c55e;
+    }
+
+    .answer-option.wrong {
+      background: rgba(248, 113, 113, 0.18);
+      border-color: #f87171;
+    }
+
+    .print-area {
+      display: none;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .print-area, .print-area * {
+        visibility: visible;
+      }
+      .print-area {
+        display: block;
+        position: absolute;
+        inset: 0;
+        padding: 32px;
+        background: white;
+        color: #111827;
+        font-family: Arial, sans-serif;
+      }
+      .app-shell {
+        background: white;
+      }
+    }
+
+    .focusable:focus {
+      outline: 3px solid #ffc72c;
+      outline-offset: 3px;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full w-full">
+  <div id="appShell" class="app-shell">
+   <header class="relative z-10 px-5 py-5 md:px-10">
+    <nav class="mx-auto flex w-full max-w-7xl flex-col gap-4 rounded-3xl glass-card p-4 md:flex-row md:items-center md:justify-between" aria-label="Navigasi modul">
+     <div class="flex items-center gap-3">
+      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#ffc72c] text-[#07111f] shadow-lg"><i data-lucide="pen-tool" aria-hidden="true"></i>
+      </div>
+      <div>
+       <p class="text-sm font-bold uppercase tracking-[0.25em] text-[#ffc72c]">Modul Digital</p>
+       <h1 id="navTitle" class="text-xl font-extrabold leading-tight">CorelDRAW untuk Infografis &amp; Poster</h1>
+      </div>
+     </div>
+     <div class="flex flex-wrap gap-2"><button type="button" class="tab-button active focusable rounded-2xl px-4 py-3 text-sm font-bold text-white" data-tab="materi"> 1. Materi </button> <button type="button" class="tab-button focusable rounded-2xl px-4 py-3 text-sm font-bold text-white" data-tab="lkpd"> 2. LKPD </button> <button type="button" class="tab-button focusable rounded-2xl px-4 py-3 text-sm font-bold text-white" data-tab="assessment"> 3. Assessment </button>
+     </div>
+    </nav>
+   </header>
+   <main class="relative z-10 mx-auto w-full max-w-7xl px-5 pb-10 md:px-10">
+    <section class="mb-7 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+     <div class="paper-card rounded-[2rem] p-6 md:p-8">
+      <div class="mb-4 inline-flex items-center gap-2 rounded-full bg-[#07111f] px-4 py-2 text-sm font-bold text-[#ffc72c]"><i data-lucide="sparkles" class="h-4 w-4" aria-hidden="true"></i> Fase F • SMK Multimedia • Kelas 11
+      </div>
+      <h2 id="moduleTitle" class="hero-title text-4xl font-black leading-none md:text-6xl">Mengenal CorelDRAW</h2>
+      <p id="moduleSubtitle" class="mt-4 max-w-2xl text-lg font-semibold leading-relaxed text-[#172033]/85">Belajar software desain grafis vektor untuk membuat infografis, poster, logo, dan karya visual profesional.</p>
+      <div class="mt-6 flex flex-wrap items-center gap-3"><button id="startButton" type="button" class="focusable rounded-2xl bg-[#00d2ff] px-6 py-3 font-extrabold text-[#07111f] shadow-xl transition hover:-translate-y-1 hover:bg-[#35dcff]"> Mulai Belajar </button> <span id="classInfo" class="rounded-2xl border-2 border-[#07111f]/20 px-4 py-3 text-sm font-bold"> Multimedia Fase F Kelas 11 </span>
+      </div>
+      <p class="mt-5 text-sm font-bold text-[#172033]/70">Pembuat: <span id="creatorName">MUHAMMAD YASIR</span> • <span id="creatorNim">NIM: isi NIM di panel edit</span></p>
+     </div>
+     <aside class="glass-card relative overflow-hidden rounded-[2rem] p-6" aria-label="Ilustrasi CorelDRAW">
+      <div class="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#00d2ff]/25 blur-2xl"></div>
+      <div class="absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-[#ffc72c]/25 blur-2xl"></div>
+      <div class="relative mx-auto aspect-square max-w-sm">
+       <svg viewbox="0 0 420 420" role="img" aria-label="Ilustrasi desain vektor dan poster" class="h-full w-full"><defs>
+         <lineargradient id="posterGrad" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0%" stop-color="#00d2ff" />
+          <stop offset="100%" stop-color="#ffc72c" />
+         </lineargradient>
+        </defs> <circle cx="210" cy="210" r="160" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.18)" stroke-width="2" /> <g class="orbit">
+         <circle cx="210" cy="40" r="16" fill="#ffc72c" />
+         <circle cx="380" cy="210" r="13" fill="#00d2ff" />
+         <circle cx="210" cy="380" r="18" fill="#ffc72c" />
+         <circle cx="40" cy="210" r="12" fill="#00d2ff" />
+        </g> <rect x="112" y="80" width="196" height="260" rx="26" fill="#fff7df" /> <rect x="135" y="108" width="150" height="68" rx="16" fill="url(#posterGrad)" /> <circle cx="162" cy="222" r="36" fill="#00d2ff" /> <path d="M210 191 L278 281 H168 Z" fill="#ffc72c" /> <rect x="142" y="296" width="135" height="12" rx="6" fill="#07111f" opacity="0.85" /> <rect x="142" y="318" width="92" height="10" rx="5" fill="#07111f" opacity="0.45" /> <path d="M90 112 C70 156 70 262 103 312" fill="none" stroke="#00d2ff" stroke-width="12" stroke-linecap="round" /> <path d="M330 112 C354 158 349 257 316 313" fill="none" stroke="#ffc72c" stroke-width="12" stroke-linecap="round" /> <circle cx="315" cy="94" r="22" fill="#07111f" stroke="#ffc72c" stroke-width="8" /> <path d="M308 94 L314 101 L326 87" fill="none" stroke="#fff7df" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+       </svg>
+      </div>
+      <div class="relative grid grid-cols-3 gap-3 text-center">
+       <div class="rounded-2xl bg-white/10 p-3">
+        <p class="text-2xl font-black text-[#ffc72c]">10</p>
+        <p class="text-xs font-bold">Soal</p>
+       </div>
+       <div class="rounded-2xl bg-white/10 p-3">
+        <p class="text-2xl font-black text-[#00d2ff]">3</p>
+        <p class="text-xs font-bold">Jendela</p>
+       </div>
+       <div class="rounded-2xl bg-white/10 p-3">
+        <p class="text-2xl font-black text-[#ffc72c]">PDF</p>
+        <p class="text-xs font-bold">Hasil</p>
+       </div>
+      </div>
+     </aside>
+    </section>
+    <section id="materi" class="screen active" aria-labelledby="materiTitle">
+     <div class="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+      <article class="glass-card rounded-[2rem] p-6 md:p-8">
+       <div class="mb-5 flex items-center gap-3">
+        <div class="rounded-2xl bg-[#ffc72c] p-3 text-[#07111f]"><i data-lucide="book-open" aria-hidden="true"></i>
+        </div>
+        <div>
+         <h2 id="materiTitle" class="text-3xl font-black">Jendela 1 — Paparan Materi</h2>
+         <p class="text-white/70">Pahami dasar CorelDRAW sebelum berkarya.</p>
+        </div>
+       </div>
+       <div class="space-y-5 leading-relaxed text-white/85">
+        <div class="rounded-3xl bg-white/10 p-5">
+         <h3 class="mb-2 text-xl font-extrabold text-[#ffc72c]">Apa itu CorelDRAW?</h3>
+         <p>CorelDRAW adalah software desain grafis berbasis vektor. Artinya, gambar dibuat dari garis, titik, bentuk, dan kurva sehingga tetap tajam walaupun diperbesar. Software ini banyak digunakan untuk membuat infografis, poster, logo, brosur, spanduk, stiker, dan desain promosi.</p>
+        </div>
+        <div class="rounded-3xl bg-white/10 p-5">
+         <h3 class="mb-2 text-xl font-extrabold text-[#00d2ff]">Mengapa penting untuk siswa Multimedia?</h3>
+         <p>Siswa SMK Multimedia perlu menguasai CorelDRAW karena dunia industri kreatif membutuhkan kemampuan membuat pesan visual yang jelas, menarik, dan komunikatif. Melalui desain vektor, siswa dapat membuat karya siap cetak maupun digital.</p>
+        </div>
+        <div class="rounded-3xl bg-white/10 p-5">
+         <h3 class="mb-2 text-xl font-extrabold text-[#ffc72c]">Alur membuat poster/infografis</h3>
+         <ol class="list-decimal space-y-2 pl-5">
+          <li>Tentukan tujuan pesan dan target pembaca.</li>
+          <li>Buat sketsa tata letak: judul, gambar utama, ikon, dan informasi penting.</li>
+          <li>Gunakan tools CorelDRAW untuk membuat bentuk, teks, warna, dan ilustrasi.</li>
+          <li>Periksa keterbacaan, keseimbangan, kontras, dan kesatuan desain.</li>
+          <li>Ekspor karya ke format sesuai kebutuhan, misalnya PDF, PNG, atau JPG.</li>
+         </ol>
+        </div>
+       </div>
+      </article>
+      <article class="rounded-[2rem] bg-[#fff7df] p-6 text-[#172033] shadow-2xl md:p-8">
+       <h2 class="mb-5 text-3xl font-black">Fungsi Tools CorelDRAW</h2>
+       <div class="grid gap-4 sm:grid-cols-2">
+        <div class="tool-chip rounded-3xl bg-white p-5">
+         <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#00d2ff] text-[#07111f]"><i data-lucide="mouse-pointer-2" aria-hidden="true"></i>
+         </div>
+         <h3 class="font-black">Pick Tool</h3>
+         <p class="text-sm text-[#172033]/75">Memilih, memindahkan, memperbesar, memperkecil, dan memutar objek.</p>
+        </div>
+        <div class="tool-chip rounded-3xl bg-white p-5">
+         <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#ffc72c] text-[#07111f]"><i data-lucide="type" aria-hidden="true"></i>
+         </div>
+         <h3 class="font-black">Text Tool</h3>
+         <p class="text-sm text-[#172033]/75">Menambahkan judul, isi informasi, label, dan tipografi pada poster.</p>
+        </div>
+        <div class="tool-chip rounded-3xl bg-white p-5">
+         <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#00d2ff] text-[#07111f]"><i data-lucide="shapes" aria-hidden="true"></i>
+         </div>
+         <h3 class="font-black">Shape Tool</h3>
+         <p class="text-sm text-[#172033]/75">Mengedit titik, garis, dan lengkungan agar bentuk lebih presisi.</p>
+        </div>
+        <div class="tool-chip rounded-3xl bg-white p-5">
+         <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#ffc72c] text-[#07111f]"><i data-lucide="square" aria-hidden="true"></i>
+         </div>
+         <h3 class="font-black">Rectangle &amp; Ellipse</h3>
+         <p class="text-sm text-[#172033]/75">Membuat kotak, lingkaran, ikon, tombol, dan elemen dekoratif.</p>
+        </div>
+        <div class="tool-chip rounded-3xl bg-white p-5">
+         <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#00d2ff] text-[#07111f]"><i data-lucide="pen-line" aria-hidden="true"></i>
+         </div>
+         <h3 class="font-black">Bezier/Pen Tool</h3>
+         <p class="text-sm text-[#172033]/75">Menggambar garis bebas, ikon, ilustrasi, dan kurva vektor.</p>
+        </div>
+        <div class="tool-chip rounded-3xl bg-white p-5">
+         <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#ffc72c] text-[#07111f]"><i data-lucide="paint-bucket" aria-hidden="true"></i>
+         </div>
+         <h3 class="font-black">Fill &amp; Outline</h3>
+         <p class="text-sm text-[#172033]/75">Memberi warna isi, garis tepi, gradasi, dan identitas visual desain.</p>
+        </div>
+       </div>
+       <div class="mt-6 rounded-3xl bg-[#07111f] p-5 text-white">
+        <h3 class="mb-2 font-black text-[#ffc72c]">Tips Desain Poster</h3>
+        <p class="text-sm text-white/80">Gunakan hierarki visual: judul paling menonjol, informasi penting mudah dibaca, warna tidak terlalu ramai, dan gambar mendukung pesan utama.</p>
+       </div>
+      </article>
+     </div>
+    </section>
+    <section id="lkpd" class="screen" aria-labelledby="lkpdTitle">
+     <div class="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+      <article class="glass-card rounded-[2rem] p-6 md:p-8">
+       <div class="mb-5 flex items-center gap-3">
+        <div class="rounded-2xl bg-[#00d2ff] p-3 text-[#07111f]"><i data-lucide="clipboard-list" aria-hidden="true"></i>
+        </div>
+        <div>
+         <h2 id="lkpdTitle" class="text-3xl font-black">Jendela 2 — LKPD</h2>
+         <p class="text-white/70">Lembar Kerja Peserta Didik</p>
+        </div>
+       </div>
+       <div class="space-y-4 text-white/85">
+        <div class="rounded-3xl bg-white/10 p-5">
+         <h3 class="mb-2 text-xl font-extrabold text-[#ffc72c]">Tujuan Kegiatan</h3>
+         <p>Siswa mampu merancang konsep infografis/poster sederhana menggunakan pemahaman tools dasar CorelDRAW.</p>
+        </div>
+        <div class="rounded-3xl bg-white/10 p-5">
+         <h3 class="mb-2 text-xl font-extrabold text-[#00d2ff]">Tugas Proyek Mini</h3>
+         <p>Buat rancangan poster bertema <strong>“Bijak Bermedia Digital”</strong> dengan minimal 1 judul, 3 ikon, 3 informasi utama, dan kombinasi warna yang harmonis.</p>
+        </div>
+        <div class="rounded-3xl bg-white/10 p-5">
+         <h3 class="mb-2 text-xl font-extrabold text-[#ffc72c]">Kriteria Produk</h3>
+         <ul class="list-disc space-y-2 pl-5">
+          <li>Pesan poster jelas dan sesuai tema.</li>
+          <li>Memakai minimal 4 tools CorelDRAW.</li>
+          <li>Tata letak rapi dan mudah dibaca.</li>
+          <li>Warna, ikon, dan tipografi saling mendukung.</li>
+         </ul>
+        </div>
+       </div>
+      </article>
+      <article class="rounded-[2rem] bg-[#fff7df] p-6 text-[#172033] shadow-2xl md:p-8">
+       <h2 class="mb-4 text-3xl font-black">Isi LKPD Interaktif</h2>
+       <form id="lkpdForm" class="space-y-5">
+        <div><label for="studentName" class="mb-2 block font-extrabold">Nama Peserta Didik</label> <input id="studentName" type="text" class="focusable w-full rounded-2xl border-2 border-[#07111f]/15 bg-white px-4 py-3 font-semibold outline-none" placeholder="Tulis nama kamu">
+        </div>
+        <div><label for="posterGoal" class="mb-2 block font-extrabold">Tujuan Pesan Poster</label> <textarea id="posterGoal" rows="3" class="focusable w-full rounded-2xl border-2 border-[#07111f]/15 bg-white px-4 py-3 font-semibold outline-none" placeholder="Contoh: Mengajak teman agar lebih bijak saat membagikan informasi."></textarea>
+        </div>
+        <div><label for="targetAudience" class="mb-2 block font-extrabold">Target Pembaca</label> <input id="targetAudience" type="text" class="focusable w-full rounded-2xl border-2 border-[#07111f]/15 bg-white px-4 py-3 font-semibold outline-none" placeholder="Contoh: Siswa SMK kelas 11">
+        </div>
+        <fieldset class="rounded-3xl border-2 border-[#07111f]/15 p-4"><legend class="px-2 font-extrabold">Tools yang akan digunakan</legend>
+         <div class="grid gap-3 sm:grid-cols-2"><label class="flex items-center gap-2 rounded-2xl bg-white p-3 font-semibold"> <input type="checkbox" name="tools" value="Pick Tool" class="h-5 w-5"> Pick Tool </label> <label class="flex items-center gap-2 rounded-2xl bg-white p-3 font-semibold"> <input type="checkbox" name="tools" value="Text Tool" class="h-5 w-5"> Text Tool </label> <label class="flex items-center gap-2 rounded-2xl bg-white p-3 font-semibold"> <input type="checkbox" name="tools" value="Shape Tool" class="h-5 w-5"> Shape Tool </label> <label class="flex items-center gap-2 rounded-2xl bg-white p-3 font-semibold"> <input type="checkbox" name="tools" value="Fill Tool" class="h-5 w-5"> Fill Tool </label>
+         </div>
+        </fieldset>
+        <div><label for="designConcept" class="mb-2 block font-extrabold">Konsep Visual</label> <textarea id="designConcept" rows="4" class="focusable w-full rounded-2xl border-2 border-[#07111f]/15 bg-white px-4 py-3 font-semibold outline-none" placeholder="Jelaskan warna, ikon, komposisi, dan gaya desain yang akan kamu buat."></textarea>
+        </div><button type="submit" class="focusable w-full rounded-2xl bg-[#07111f] px-5 py-4 font-black text-[#ffc72c] transition hover:-translate-y-1"> Simpan Ringkasan LKPD </button>
+        <div id="lkpdMessage" class="hidden rounded-2xl bg-[#00d2ff]/20 p-4 font-bold text-[#07111f]"></div>
+       </form>
+      </article>
+     </div>
+    </section>
+    <section id="assessment" class="screen" aria-labelledby="assessmentTitle">
+     <div class="glass-card rounded-[2rem] p-6 md:p-8">
+      <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+       <div class="flex items-center gap-3">
+        <div class="rounded-2xl bg-[#ffc72c] p-3 text-[#07111f]"><i data-lucide="badge-check" aria-hidden="true"></i>
+        </div>
+        <div>
+         <h2 id="assessmentTitle" class="text-3xl font-black">Jendela 3 — Assessment</h2>
+         <p class="text-white/70">10 soal pilihan ganda: 5 LOTS dan 5 HOTS.</p>
+        </div>
+       </div>
+       <div class="rounded-3xl bg-white/10 px-5 py-4">
+        <p class="text-sm font-bold text-white/70">Skor Saat Ini</p>
+        <p id="scorePreview" class="text-3xl font-black text-[#ffc72c]">0/100</p>
+       </div>
+      </div>
+      <form id="quizForm" class="space-y-5">
+       <div id="questionList" class="space-y-5"></div>
+       <div class="flex flex-col gap-3 rounded-3xl bg-white/10 p-5 md:flex-row md:items-center md:justify-between">
+        <div>
+         <p class="font-extrabold text-[#ffc72c]">Siap dinilai?</p>
+         <p class="text-sm text-white/70">Pastikan semua soal sudah dijawab agar hasil maksimal.</p>
+        </div>
+        <div class="flex flex-wrap gap-3"><button type="submit" class="focusable rounded-2xl bg-[#ffc72c] px-6 py-3 font-black text-[#07111f] transition hover:-translate-y-1"> Nilai Jawaban </button> <button id="resetQuiz" type="button" class="focusable rounded-2xl bg-white/10 px-6 py-3 font-black text-white transition hover:-translate-y-1"> Ulangi </button> <button id="downloadPdf" type="button" class="focusable rounded-2xl bg-[#00d2ff] px-6 py-3 font-black text-[#07111f] transition hover:-translate-y-1"> Unduh PDF </button>
+        </div>
+       </div>
+      </form>
+      <div id="resultBox" class="mt-6 hidden rounded-3xl bg-[#fff7df] p-6 text-[#172033]">
+       <h3 class="text-2xl font-black">Hasil Assessment</h3>
+       <p id="resultText" class="mt-2 font-semibold"></p>
+       <div id="resultAdvice" class="mt-4 rounded-2xl bg-white p-4 font-semibold"></div>
+      </div>
+     </div>
+    </section>
+   </main>
+   <footer class="relative z-10 mx-auto w-full max-w-7xl px-5 pb-6 md:px-10">
+    <div class="rounded-3xl glass-card p-5 text-center text-sm font-semibold text-white/75">
+     Modul Digital Interaktif • CorelDRAW untuk SMK Multimedia • Dibuat oleh <span id="footerCreator">MUHAMMAD YASIR</span>
+    </div>
+   </footer>
+   <section id="printArea" class="print-area" aria-label="Dokumen PDF hasil assessment">
+    <h1>Hasil Assessment Modul CorelDRAW</h1>
+    <p><strong>Nama:</strong> <span id="printName">-</span></p>
+    <p><strong>Kelas/Fase:</strong> <span id="printClass">Multimedia Fase F Kelas 11</span></p>
+    <p><strong>Pembuat Modul:</strong> <span id="printCreator">MUHAMMAD YASIR</span> — <span id="printNim">NIM: isi NIM di panel edit</span></p>
+    <hr>
+    <h2>Skor</h2>
+    <p id="printScore">Belum dinilai</p>
+    <h2>Jawaban Peserta Didik</h2>
+    <ol id="printAnswers"></ol>
+    <h2>Catatan</h2>
+    <p id="printAdvice">Silakan nilai jawaban terlebih dahulu.</p>
+   </section>
+  </div>
+  <script>
+    const defaultConfig = {
+      background_color: "#07111f",
+      surface_color: "#fff7df",
+      text_color: "#f8fafc",
+      primary_action_color: "#ffc72c",
+      secondary_action_color: "#00d2ff",
+      font_family: "Outfit",
+      font_size: 16,
+      module_title: "Mengenal CorelDRAW",
+      module_subtitle: "Belajar software desain grafis vektor untuk membuat infografis, poster, logo, dan karya visual profesional.",
+      creator_name: "MUHAMMAD YASIR",
+      creator_nim: "NIM: isi NIM di panel edit",
+      class_info: "Multimedia Fase F Kelas 11",
+      button_label: "Mulai Belajar"
+    };
+
+    const questions = [
+      {
+        level: "LOTS",
+        text: "CorelDRAW termasuk software desain grafis berbasis...",
+        options: ["Raster", "Vektor", "Audio", "Video"],
+        answer: 1
+      },
+      {
+        level: "LOTS",
+        text: "Tool yang digunakan untuk memilih dan memindahkan objek adalah...",
+        options: ["Pick Tool", "Text Tool", "Fill Tool", "Zoom Tool"],
+        answer: 0
+      },
+      {
+        level: "LOTS",
+        text: "Tool untuk menambahkan tulisan pada poster adalah...",
+        options: ["Shape Tool", "Text Tool", "Bezier Tool", "Crop Tool"],
+        answer: 1
+      },
+      {
+        level: "LOTS",
+        text: "Fungsi Fill Tool dalam CorelDRAW adalah...",
+        options: ["Menghapus objek", "Memberi warna isi objek", "Memotong gambar", "Menyimpan file"],
+        answer: 1
+      },
+      {
+        level: "LOTS",
+        text: "Karya yang dapat dibuat dengan CorelDRAW adalah...",
+        options: ["Poster dan infografis", "Rekaman suara", "Animasi 3D kompleks", "Database sekolah"],
+        answer: 0
+      },
+      {
+        level: "HOTS",
+        text: "Jika poster sulit dibaca karena teks dan latar belakang warnanya hampir sama, prinsip desain yang perlu diperbaiki adalah...",
+        options: ["Kontras", "Duplikasi file", "Resolusi audio", "Nama folder"],
+        answer: 0
+      },
+      {
+        level: "HOTS",
+        text: "Seorang siswa ingin membuat ikon sendiri dengan bentuk lengkung unik. Tool paling tepat digunakan adalah...",
+        options: ["Bezier/Pen Tool", "Text Tool", "Table Tool", "Print Tool"],
+        answer: 0
+      },
+      {
+        level: "HOTS",
+        text: "Dalam membuat infografis, informasi utama sebaiknya dibuat lebih besar dan menonjol agar...",
+        options: ["File menjadi lebih berat", "Pembaca memahami prioritas informasi", "Warna otomatis berubah", "Objek tidak bisa diedit"],
+        answer: 1
+      },
+      {
+        level: "HOTS",
+        text: "Jika desain poster terlihat penuh dan membingungkan, solusi terbaik adalah...",
+        options: ["Menambah semua warna", "Mengurangi elemen yang tidak penting dan merapikan tata letak", "Mengecilkan semua teks sampai tidak terbaca", "Menghapus judul"],
+        answer: 1
+      },
+      {
+        level: "HOTS",
+        text: "Mengapa desain berbasis vektor cocok untuk poster ukuran besar?",
+        options: ["Karena tetap tajam saat diperbesar", "Karena hanya bisa hitam putih", "Karena tidak bisa dicetak", "Karena otomatis menjadi video"],
+        answer: 0
+      }
+    ];
+
+    let selectedAnswers = {};
+    let hasGraded = false;
+    let latestScore = 0;
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function showTab(tabName) {
+      document.querySelectorAll(".screen").forEach(section => {
+        section.classList.toggle("active", section.id === tabName);
+      });
+
+      document.querySelectorAll(".tab-button").forEach(button => {
+        button.classList.toggle("active", button.dataset.tab === tabName);
+      });
+
+      setTimeout(() => {
+        if (window.lucide) {
+          lucide.createIcons();
+        }
+      }, 0);
+    }
+
+    function renderQuestions() {
+      const list = $("questionList");
+      list.innerHTML = "";
+
+      questions.forEach((question, qIndex) => {
+        const card = document.createElement("article");
+        card.className = "rounded-3xl bg-white/10 p-5";
+        card.dataset.questionIndex = qIndex;
+
+        const title = document.createElement("div");
+        title.className = "mb-4 flex flex-col gap-2 md:flex-row md:items-start md:justify-between";
+        title.innerHTML = `
+          <h3 class="text-lg font-black">${qIndex + 1}. ${question.text}</h3>
+          <span class="inline-flex w-fit rounded-full ${question.level === "HOTS" ? "bg-[#00d2ff]" : "bg-[#ffc72c]"} px-3 py-1 text-xs font-black text-[#07111f]">${question.level}</span>
+        `;
+
+        const optionsWrap = document.createElement("div");
+        optionsWrap.className = "grid gap-3";
+
+        question.options.forEach((option, optionIndex) => {
+          const optionId = `q${qIndex}_o${optionIndex}`;
+          const label = document.createElement("label");
+          label.className = "answer-option flex cursor-pointer items-start gap-3 rounded-2xl border-2 border-white/15 p-4";
+          label.dataset.questionIndex = qIndex;
+          label.dataset.optionIndex = optionIndex;
+          label.setAttribute("for", optionId);
+
+          label.innerHTML = `
+            <input id="${optionId}" class="mt-1 h-5 w-5" type="radio" name="question_${qIndex}" value="${optionIndex}" />
+            <span class="font-semibold">${option}</span>
+          `;
+
+          const input = label.querySelector("input");
+          input.addEventListener("change", () => {
+            selectedAnswers[qIndex] = optionIndex;
+            hasGraded = false;
+            updateOptionStates();
+            updateScorePreview(false);
+          });
+
+          optionsWrap.appendChild(label);
+        });
+
+        card.appendChild(title);
+        card.appendChild(optionsWrap);
+        list.appendChild(card);
+      });
+    }
+
+    function updateOptionStates(showCorrect = false) {
+      document.querySelectorAll(".answer-option").forEach(label => {
+        const qIndex = Number(label.dataset.questionIndex);
+        const optionIndex = Number(label.dataset.optionIndex);
+        label.classList.remove("selected", "correct", "wrong");
+
+        if (selectedAnswers[qIndex] === optionIndex) {
+          label.classList.add("selected");
+        }
+
+        if (showCorrect) {
+          if (questions[qIndex].answer === optionIndex) {
+            label.classList.add("correct");
+          } else if (selectedAnswers[qIndex] === optionIndex && selectedAnswers[qIndex] !== questions[qIndex].answer) {
+            label.classList.add("wrong");
+          }
+        }
+      });
+    }
+
+    function calculateScore() {
+      let correct = 0;
+      questions.forEach((question, index) => {
+        if (selectedAnswers[index] === question.answer) {
+          correct += 1;
+        }
+      });
+      return {
+        correct,
+        total: questions.length,
+        score: correct * 10
+      };
+    }
+
+    function updateScorePreview(showScore) {
+      if (showScore) {
+        const result = calculateScore();
+        latestScore = result.score;
+        $("scorePreview").textContent = `${result.score}/100`;
+      } else {
+        const answered = Object.keys(selectedAnswers).length;
+        $("scorePreview").textContent = `${answered}/${questions.length} dijawab`;
+      }
+    }
+
+    function gradeQuiz() {
+      const result = calculateScore();
+      latestScore = result.score;
+      hasGraded = true;
+      updateOptionStates(true);
+      updateScorePreview(true);
+
+      const unanswered = questions.length - Object.keys(selectedAnswers).length;
+      const resultText = unanswered > 0
+        ? `Kamu menjawab benar ${result.correct} dari ${result.total} soal. Masih ada ${unanswered} soal yang belum dijawab. Skor: ${result.score}.`
+        : `Kamu menjawab benar ${result.correct} dari ${result.total} soal. Skor akhir: ${result.score}.`;
+
+      let advice = "";
+      if (result.score >= 80) {
+        advice = "Luar biasa! Kamu sudah memahami fungsi tools CorelDRAW dan mampu menganalisis penerapannya dalam desain.";
+      } else if (result.score >= 60) {
+        advice = "Bagus! Kamu sudah cukup paham. Coba ulangi bagian tools dan prinsip desain agar hasilmu lebih kuat.";
+      } else {
+        advice = "Tetap semangat! Pelajari kembali materi dasar CorelDRAW, terutama fungsi tools dan prinsip keterbacaan poster.";
+      }
+
+      $("resultText").textContent = resultText;
+      $("resultAdvice").textContent = advice;
+      $("resultBox").classList.remove("hidden");
+      preparePrintArea(advice);
+    }
+
+    function resetQuiz() {
+      selectedAnswers = {};
+      hasGraded = false;
+      latestScore = 0;
+      document.querySelectorAll("#quizForm input[type='radio']").forEach(input => {
+        input.checked = false;
+      });
+      updateOptionStates(false);
+      $("scorePreview").textContent = "0/100";
+      $("resultBox").classList.add("hidden");
+      preparePrintArea("Silakan nilai jawaban terlebih dahulu.");
+    }
+
+    function preparePrintArea(adviceText) {
+      const studentName = $("studentName").value.trim() || "Belum diisi";
+      const currentConfig = window.elementSdk ? window.elementSdk.config : defaultConfig;
+
+      $("printName").textContent = studentName;
+      $("printClass").textContent = currentConfig.class_info || defaultConfig.class_info;
+      $("printCreator").textContent = currentConfig.creator_name || defaultConfig.creator_name;
+      $("printNim").textContent = currentConfig.creator_nim || defaultConfig.creator_nim;
+      $("printScore").textContent = hasGraded ? `${latestScore}/100` : "Belum dinilai";
+      $("printAdvice").textContent = adviceText;
+
+      const printAnswers = $("printAnswers");
+      printAnswers.innerHTML = "";
+
+      questions.forEach((question, index) => {
+        const li = document.createElement("li");
+        const answerIndex = selectedAnswers[index];
+        const answerText = answerIndex === undefined ? "Belum dijawab" : question.options[answerIndex];
+        const correctText = question.options[question.answer];
+        const status = answerIndex === question.answer ? "Benar" : "Salah/Belum dijawab";
+        li.innerHTML = `<strong>${question.level}</strong> — ${question.text}<br>Jawaban: ${answerText}<br>Kunci: ${correctText}<br>Status: ${status}`;
+        li.style.marginBottom = "12px";
+        printAnswers.appendChild(li);
+      });
+    }
+
+    function downloadPdf() {
+      if (!hasGraded) {
+        $("resultBox").classList.remove("hidden");
+        $("resultText").textContent = "Nilai jawaban terlebih dahulu sebelum mengunduh PDF.";
+        $("resultAdvice").textContent = "Setelah dinilai, tekan tombol Unduh PDF. Pilih “Save as PDF” pada jendela cetak.";
+        preparePrintArea("Nilai jawaban terlebih dahulu sebelum mengunduh PDF.");
+        return;
+      }
+
+      preparePrintArea($("resultAdvice").textContent);
+      window.print();
+    }
+
+    function handleLkpdSubmit(event) {
+      event.preventDefault();
+
+      const tools = Array.from(document.querySelectorAll("input[name='tools']:checked")).map(item => item.value);
+      const message = $("lkpdMessage");
+
+      const name = $("studentName").value.trim() || "Peserta didik";
+      const goal = $("posterGoal").value.trim();
+      const audience = $("targetAudience").value.trim();
+      const concept = $("designConcept").value.trim();
+
+      if (!goal || !audience || tools.length === 0 || !concept) {
+        message.classList.remove("hidden");
+        message.textContent = "Lengkapi tujuan poster, target pembaca, minimal satu tool, dan konsep visual terlebih dahulu.";
+        return;
+      }
+
+      message.classList.remove("hidden");
+      message.textContent = `Mantap, ${name}! Ringkasan LKPD tersimpan di halaman ini. Kamu memilih ${tools.join(", ")} untuk membuat poster bertema “Bijak Bermedia Digital”.`;
+    }
+
+    function applyConfig(config) {
+      const cfg = Object.assign({}, defaultConfig, config || {});
+      const baseSize = Number(cfg.font_size) || defaultConfig.font_size;
+      const fontStack = `${cfg.font_family || defaultConfig.font_family}, Outfit, sans-serif`;
+
+      document.body.style.fontFamily = fontStack;
+      $("appShell").style.background = `
+        radial-gradient(circle at 10% 15%, ${hexToRgba(cfg.primary_action_color, 0.28)}, transparent 28%),
+        radial-gradient(circle at 85% 12%, ${hexToRgba(cfg.secondary_action_color, 0.24)}, transparent 30%),
+        linear-gradient(135deg, ${cfg.background_color} 0%, #0b1f3a 48%, #101827 100%)
+      `;
+      $("appShell").style.color = cfg.text_color;
+
+      document.querySelectorAll(".paper-card, article.bg-\\[\\#fff7df\\], #resultBox").forEach(el => {
+        el.style.backgroundColor = cfg.surface_color;
+      });
+
+      document.querySelectorAll(".text-\\[\\#ffc72c\\]").forEach(el => {
+        el.style.color = cfg.primary_action_color;
+      });
+
+      document.querySelectorAll(".bg-\\[\\#ffc72c\\]").forEach(el => {
+        el.style.backgroundColor = cfg.primary_action_color;
+      });
+
+      document.querySelectorAll(".bg-\\[\\#00d2ff\\]").forEach(el => {
+        el.style.backgroundColor = cfg.secondary_action_color;
+      });
+
+      document.querySelectorAll(".text-\\[\\#00d2ff\\]").forEach(el => {
+        el.style.color = cfg.secondary_action_color;
+      });
+
+      $("moduleTitle").textContent = cfg.module_title;
+      $("navTitle").textContent = cfg.module_title;
+      $("moduleSubtitle").textContent = cfg.module_subtitle;
+      $("creatorName").textContent = cfg.creator_name;
+      $("creatorNim").textContent = cfg.creator_nim;
+      $("footerCreator").textContent = cfg.creator_name;
+      $("classInfo").textContent = cfg.class_info;
+      $("startButton").textContent = cfg.button_label;
+
+      $("moduleTitle").style.fontFamily = `${cfg.font_family || defaultConfig.font_family}, Fraunces, serif`;
+      $("moduleTitle").style.fontSize = `${baseSize * 3}px`;
+      $("moduleSubtitle").style.fontSize = `${baseSize * 1.12}px`;
+
+      document.querySelectorAll("h1, h2").forEach(el => {
+        if (el.id !== "moduleTitle") {
+          el.style.fontFamily = fontStack;
+          el.style.fontSize = `${baseSize * 1.75}px`;
+        }
+      });
+
+      document.querySelectorAll("h3").forEach(el => {
+        el.style.fontSize = `${baseSize * 1.15}px`;
+      });
+
+      document.querySelectorAll("p, li, label, input, textarea, button, span").forEach(el => {
+        if (!el.closest("svg")) {
+          el.style.fontFamily = fontStack;
+        }
+      });
+
+      document.querySelectorAll("p, li, label, input, textarea").forEach(el => {
+        el.style.fontSize = `${baseSize}px`;
+      });
+
+      document.querySelectorAll("button, .tab-button").forEach(el => {
+        el.style.fontSize = `${baseSize * 0.9}px`;
+      });
+
+      preparePrintArea(hasGraded ? $("resultAdvice").textContent : "Silakan nilai jawaban terlebih dahulu.");
+    }
+
+    function hexToRgba(hex, alpha) {
+      const clean = hex.replace("#", "");
+      const bigint = parseInt(clean.length === 3 ? clean.split("").map(c => c + c).join("") : clean, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    document.querySelectorAll(".tab-button").forEach(button => {
+      button.addEventListener("click", () => showTab(button.dataset.tab));
+    });
+
+    $("startButton").addEventListener("click", () => showTab("materi"));
+    $("lkpdForm").addEventListener("submit", handleLkpdSubmit);
+    $("quizForm").addEventListener("submit", event => {
+      event.preventDefault();
+      gradeQuiz();
+    });
+    $("resetQuiz").addEventListener("click", resetQuiz);
+    $("downloadPdf").addEventListener("click", downloadPdf);
+
+    renderQuestions();
+    preparePrintArea("Silakan nilai jawaban terlebih dahulu.");
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          applyConfig(config);
+        },
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.surface_color || defaultConfig.surface_color,
+              set: (value) => {
+                config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.primary_action_color || defaultConfig.primary_action_color,
+              set: (value) => {
+                config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            },
+            {
+              get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+              set: (value) => {
+                config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (value) => {
+              config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          },
+          fontSizeable: {
+            get: () => config.font_size || defaultConfig.font_size,
+            set: (value) => {
+              config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["module_title", config.module_title || defaultConfig.module_title],
+          ["module_subtitle", config.module_subtitle || defaultConfig.module_subtitle],
+          ["creator_name", config.creator_name || defaultConfig.creator_name],
+          ["creator_nim", config.creator_nim || defaultConfig.creator_nim],
+          ["class_info", config.class_info || defaultConfig.class_info],
+          ["button_label", config.button_label || defaultConfig.button_label]
+        ])
+      });
+    } else {
+      applyConfig(defaultConfig);
+    }
+
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fbb861df493b5ab',t:'MTc3ODc3ODcwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
